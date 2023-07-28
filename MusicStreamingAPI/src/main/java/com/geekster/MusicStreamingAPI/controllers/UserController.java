@@ -24,7 +24,7 @@ public class UserController {
         return userService.signIn(signInInput);
     }
     @DeleteMapping("/signout")
-    public String signOut(@PathVariable String email,@PathVariable String tokenValue){
+    public String signOut(@RequestParam String email,@RequestParam String tokenValue){
         return userService.signOut(email,tokenValue);
     }
 }
