@@ -70,4 +70,8 @@ public class UserService {
         authTokenService.deleteToken(existingToken);
         return "sign out successfully";
     }
+
+    public User getUserById(Integer userId) {
+        return userRepo.findById(userId).orElse(null);
+    }
 }

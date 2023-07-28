@@ -8,6 +8,7 @@ import com.geekster.MusicStreamingAPI.repositories.IPlaylistRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -42,7 +43,7 @@ public class PlaylistService {
         return "songs added to your playlist";
     }
 
-    public List<Song> getAllSongs(String email) {
+    public List<Song> getTenSongs(String email) {
         User existingUser = userService.getUserByEmail(email);
         if(existingUser == null){
             throw new IllegalStateException("provide a registered email");
@@ -54,7 +55,21 @@ public class PlaylistService {
 
         Playlist playlist = playlistRepo.findByUser(existingUser);
         List<Song> songs = playlist.getSongs();
-        return songs;
+        if(songs.size()<=10) {
+            return songs;
+        }else {
+            Song arr[] = new Song[10];
+            List<Song> onlyTenSongs = new ArrayList<>();
+            int i = 0;
+            for(Song song:songs){
+                if(i==10){
+                    break;
+                }
+                onlyTenSongs.add(song);
+                i++;
+            }
+            return onlyTenSongs;
+        }
     }
 
     public String updateByEmail(Playlist playlist,String email) {
@@ -66,7 +81,14 @@ public class PlaylistService {
         if(token == null){
             return "sign in first";
         }
-
+        User oldUser = userService.getUserById(playlist.getUser().getUserId());
+        if(oldUser == null){
+            return "user with id " + playlist.getUser().getUserId() + " doesn't exist";
+        }
+        Playlist existingPlaylist = playlistRepo.findById(playlist.getListId()).orElse(null);
+        if(existingPlaylist == null){
+            return "playlist with id: " + playlist.getListId() + " doesn't exist";
+        }
         for(Song song:playlist.getSongs()){
             Integer songId = song.getSongId();
             if(!songService.checkSong(songId)){

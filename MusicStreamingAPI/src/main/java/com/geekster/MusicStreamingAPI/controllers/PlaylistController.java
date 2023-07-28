@@ -19,8 +19,8 @@ public class PlaylistController {
         return playlistService.addSongs(playlist,email);
     }
     @GetMapping("/fetchSongs")
-    public List<Song> getAllSongs(@RequestParam String email){
-        return playlistService.getAllSongs(email);
+    public List<Song> getTenSongs(@RequestParam String email){
+        return playlistService.getTenSongs(email);
     }
     @PutMapping("/update")
     public String updateByEmail(@RequestBody Playlist playlist,@RequestParam String email){
